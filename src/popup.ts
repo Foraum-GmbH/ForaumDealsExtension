@@ -154,8 +154,11 @@ function renderSection(title: string, deals: Deal[]): string {
 /**
  * Render popup content
  */
-function renderPopup(filteredDeals: FilteredDeals): void {
-  console.log('Rendering popup with deals:', filteredDeals);
+function renderPopup(filteredDeals: FilteredDeals | null): void {
+  if (!filteredDeals) {
+    renderLoadingState();
+    return;
+  }
 
   const contentDiv = document.getElementById('content');
   if (!contentDiv) return;
@@ -164,12 +167,7 @@ function renderPopup(filteredDeals: FilteredDeals): void {
     filteredDeals.promoted.length + filteredDeals.coupon.length + filteredDeals.general.length;
 
   if (totalDeals === 0) {
-    contentDiv.innerHTML = `
-      <div class="empty-state">
-        <p>No deals available for this domain</p>
-        <small>Check back later for exclusive offers!</small>
-      </div>
-    `;
+    contentDiv.innerHTML = renderEmptyState();
     return;
   }
 
@@ -181,6 +179,37 @@ function renderPopup(filteredDeals: FilteredDeals): void {
 
   // Attach event listeners
   attachEventListeners();
+}
+
+/**
+ * Render empty state content
+ */
+function renderEmptyState(): string {
+  return `
+    <div class="flex flex-col items-center justify-center p-10 text-center text-gray-400">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 mb-4 text-[#33a08e]">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z" />
+      </svg>
+      <div class="text-white font-semibold text-lg mb-1">Keine Deals verfügbar</div>
+      <div class="text-gray-400 text-sm">Schau später wieder vorbei für exklusive Angebote!</div>
+    </div>
+  `;
+}
+
+/**
+ * Render loading state content
+ */
+function renderLoadingState(): string {
+  return `
+    <div class="flex flex-col items-center justify-center py-10 text-center text-gray-400 animate-pulse">
+      <svg class="size-12 mb-4 text-[#33a08e] animate-spin" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke-opacity="0.25" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 12a8 8 0 018-8" />
+      </svg>
+      <div class="text-white font-semibold text-lg mb-1">Lädt Deals</div>
+      <div class="text-gray-400 text-sm">Bitte warte, während wir die besten Angebote abrufen.</div>
+    </div>
+  `;
 }
 
 /**
@@ -232,9 +261,10 @@ function updateHeaderInfo(domain: string | null, dealCount: number): void {
 async function loadDeals(): Promise<void> {
   try {
     currentDomain = await getCurrentDomain();
-    const response = await browser.runtime.sendMessage({ type: 'GET_DEALS' });
+    renderPopup(null);
 
-    allDeals = response.deals;
+    const response = await browser.runtime.sendMessage({ type: 'GET_DEALS' });
+    allDeals = response?.deals || [];
   } catch {
     allDeals = [];
   }

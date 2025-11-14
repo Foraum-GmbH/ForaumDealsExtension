@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Foraum Deals",
   "version": "1.0.0",
-  "description": "Get the best deals and coupons while browsing",
+  "description": "Immer die besten deals von Foraum sehen",
   "permissions": [
     "storage",
     "cookies",

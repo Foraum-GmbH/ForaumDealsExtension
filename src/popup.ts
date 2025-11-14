@@ -18,7 +18,7 @@ async function getCurrentDomain(): Promise<string> {
     try {
       const url = new URL(tabs[0].url);
       return url.hostname.replace('www.', '');
-    } catch (error) {
+    } catch {
       return '';
     }
   }
@@ -56,7 +56,7 @@ function organizeDeals(deals: Deal[]): FilteredDeals {
 async function copyToClipboard(text: string): Promise<void> {
   try {
     await navigator.clipboard.writeText(text);
-  } catch (error) {
+  } catch {
     // Fallback for older browsers
     const textarea = document.createElement('textarea');
     textarea.value = text;
@@ -77,7 +77,7 @@ async function handleCouponCopy(couponCode: string, button: HTMLElement): Promis
   const originalText = button.textContent;
   button.textContent = '✓ Copied!';
   button.style.background = '#28a745';
-  
+
   setTimeout(() => {
     button.textContent = originalText;
     button.style.background = '';
@@ -95,20 +95,20 @@ async function handleAffiliateLink(deal: Deal): Promise<void> {
       try {
         const urlObj = new URL(deal.affiliateUrl);
         const params = new URLSearchParams(urlObj.search);
-        
+
         await browser.cookies.set({
           url: urlObj.origin,
           name: 'foraum_affiliate',
           value: params.get('ref') || 'foraum',
           expirationDate: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60
         });
-      } catch (error) {
-        console.error('Error setting cookie:', error);
+      } catch {
+        console.error('Error setting cookie');
       }
     }
-    
+
     // Open link in new tab
-    browser.tabs.create({ url });
+    void browser.tabs.create({ url });
   }
 }
 
@@ -118,9 +118,9 @@ async function handleAffiliateLink(deal: Deal): Promise<void> {
 function renderDealItem(deal: Deal): string {
   const hasCoupon = !!deal.couponCode;
   const hasLink = !!(deal.affiliateUrl || deal.link);
-  
+
   let actionHtml = '';
-  
+
   if (hasCoupon) {
     actionHtml = `
       <span class="coupon-code">${deal.couponCode}</span>
@@ -135,7 +135,7 @@ function renderDealItem(deal: Deal): string {
       </button>
     `;
   }
-  
+
   return `
     <div class="deal-item">
       <div class="deal-info">
@@ -156,7 +156,7 @@ function renderSection(title: string, deals: Deal[]): string {
   if (deals.length === 0) {
     return '';
   }
-  
+
   return `
     <div class="section">
       <div class="section-header">${title}</div>
@@ -171,11 +171,10 @@ function renderSection(title: string, deals: Deal[]): string {
 function renderPopup(filteredDeals: FilteredDeals): void {
   const contentDiv = document.getElementById('content');
   if (!contentDiv) return;
-  
-  const totalDeals = filteredDeals.promoted.length + 
-                     filteredDeals.coupon.length + 
-                     filteredDeals.general.length;
-  
+
+  const totalDeals =
+    filteredDeals.promoted.length + filteredDeals.coupon.length + filteredDeals.general.length;
+
   if (totalDeals === 0) {
     contentDiv.innerHTML = `
       <div class="empty-state">
@@ -185,13 +184,13 @@ function renderPopup(filteredDeals: FilteredDeals): void {
     `;
     return;
   }
-  
+
   contentDiv.innerHTML = `
     ${renderSection('⭐ Promoted Deals', filteredDeals.promoted)}
     ${renderSection('🎟️ Coupon Deals', filteredDeals.coupon)}
     ${renderSection('💰 General Deals', filteredDeals.general)}
   `;
-  
+
   // Attach event listeners
   attachEventListeners();
 }
@@ -202,7 +201,7 @@ function renderPopup(filteredDeals: FilteredDeals): void {
 function attachEventListeners(): void {
   // Copy coupon buttons
   document.querySelectorAll('.copy-coupon').forEach(button => {
-    button.addEventListener('click', async (e) => {
+    button.addEventListener('click', async e => {
       const target = e.target as HTMLElement;
       const couponCode = target.getAttribute('data-coupon');
       if (couponCode) {
@@ -210,10 +209,10 @@ function attachEventListeners(): void {
       }
     });
   });
-  
+
   // Open link buttons
   document.querySelectorAll('.open-link').forEach(button => {
-    button.addEventListener('click', async (e) => {
+    button.addEventListener('click', async e => {
       const target = e.target as HTMLElement;
       const dealId = target.getAttribute('data-deal-id');
       const deal = allDeals.find(d => d.id === dealId);
@@ -254,10 +253,10 @@ async function loadDeals(): Promise<void> {
   try {
     // Get current domain
     currentDomain = await getCurrentDomain();
-    
+
     // Get deals from background script
     const response = await browser.runtime.sendMessage({ type: 'GET_DEALS' });
-    
+
     if (!response || !response.deals) {
       const contentDiv = document.getElementById('content');
       if (contentDiv) {
@@ -270,21 +269,20 @@ async function loadDeals(): Promise<void> {
       }
       return;
     }
-    
+
     allDeals = response.deals;
-    
+
     // Filter deals by current domain
     const filteredDeals = filterDealsByDomain(allDeals, currentDomain);
-    
+
     // Organize deals by type
     const organizedDeals = organizeDeals(filteredDeals);
-    
+
     // Update domain info
     updateDomainInfo(currentDomain, filteredDeals.length);
-    
+
     // Render popup
     renderPopup(organizedDeals);
-    
   } catch (error) {
     console.error('Error loading deals:', error);
     const contentDiv = document.getElementById('content');

@@ -1,6 +1,28 @@
 # Foraum Deals Browser Extension
 
-A cross-browser extension (Chrome & Firefox) that displays affiliate deals and coupons for the websites you visit.
+<div align="center">
+
+![License](https://img.shields.io/badge/license-See%20LICENSE-blue.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+![Chrome](https://img.shields.io/badge/Chrome-88%2B-brightgreen.svg)
+![Firefox](https://img.shields.io/badge/Firefox-109%2B-orange.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)
+
+**A cross-browser extension that displays affiliate deals and coupons for the websites you visit.**
+
+[Features](#features) • [Installation](#installing-the-extension) • [Development](#development) • [API Integration](#api-integration) • [Contributing](#contributing)
+
+</div>
+
+---
+
+
+## Screenshots
+
+<div align="center">
+  <img src="https://via.placeholder.com/800x450/667eea/ffffff?text=Popup+with+Deals" alt="Extension Popup" />
+  <p><i>Extension popup showing categorized deals</i></p>
+</div>
 
 ## Features
 
@@ -29,32 +51,62 @@ ForaumDealsExtension/
 └── webpack.config.js    # Build configuration
 ```
 
+### Component Flow
+
+```
+Browser Startup → Background Worker → Fetch Deals from API → Store Locally
+                                                                    ↓
+User Visits Page → Content Script → Check Domain → Filter Deals ← Storage
+                                                          ↓
+User Clicks Icon → Popup Opens → Display Filtered Deals → User Action
+```
+
+## API Integration
+
+The extension integrates with a REST API to fetch deals. See [API.md](API.md) for detailed integration guide.
+
+### Quick API Setup
+
+1. Update the API URL in `src/background.ts`:
+   ```typescript
+   const API_URL = 'https://your-api.example.com/deals';
+   ```
+
+2. Expected API response format:
+   ```json
+   {
+     "deals": [
+       {
+         "id": "1",
+         "title": "20% Off",
+         "description": "Save on your order",
+         "type": "promoted",
+         "domain": "example.com",
+         "couponCode": "SAVE20",
+         "affiliateUrl": "https://example.com?ref=foraum"
+       }
+     ]
+   }
+   ```
+
+For complete API documentation, see [API.md](API.md).
+
 ## Development
 
-### Prerequisites
+### Available Scripts
 
-- Node.js 14 or higher
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/Foraum-GmbH/ForaumDealsExtension.git
-cd ForaumDealsExtension
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Build the extension:
-```bash
-npm run build
-```
-
-The built extension will be in the `dist/` directory.
+| Command | Description |
+|---------|-------------|
+| `npm run build` | Build the extension for production |
+| `npm run watch` | Build and watch for changes during development |
+| `npm run clean` | Remove the dist directory |
+| `npm run package` | Build and create a distributable zip file |
+| `npm run lint` | Run ESLint to check code quality |
+| `npm run lint:fix` | Run ESLint and auto-fix issues |
+| `npm run format` | Format code with Prettier |
+| `npm run format:check` | Check code formatting without making changes |
+| `npm run type-check` | Check TypeScript types without building |
+| `npm run check` | Run all checks (lint + format + type-check) |
 
 ### Development Mode
 
@@ -143,16 +195,64 @@ Cookies are set with a 30-day expiration and include the affiliate reference par
 
 ## Browser Compatibility
 
-- ✅ Chrome 88+
-- ✅ Firefox 109+
-- ✅ Edge 88+
-- ✅ Opera 74+
-- ✅ Brave (Chromium-based version)
+| Browser | Minimum Version | Status |
+|---------|----------------|--------|
+| Chrome | 88+ | ✅ Supported |
+| Firefox | 109+ | ✅ Supported |
+| Edge | 88+ | ✅ Supported |
+| Opera | 74+ | ✅ Supported |
+| Brave | Latest | ✅ Supported |
+| Safari | - | ⏳ Planned |
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Quick Start for Contributors
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes
+4. Build and test: `npm run build`
+5. Commit: `git commit -m 'Add amazing feature'`
+6. Push: `git push origin feature/amazing-feature`
+7. Open a Pull Request
+
+## Security
+
+Security is important to us. If you discover a security vulnerability, please review our [Security Policy](SECURITY.md) for responsible disclosure guidelines.
+
+## Roadmap
+
+- [x] Core extension functionality
+- [x] Chrome & Firefox support
+- [x] TypeScript implementation
+- [x] Cookie management
+- [ ] Safari support
+- [ ] User preferences/settings
+- [ ] Deal categories customization
+- [ ] Notifications for new deals
+- [ ] Analytics dashboard
 
 ## License
 
 See [LICENSE](LICENSE) file for details.
 
+## Acknowledgments
+
+- Built with [TypeScript](https://www.typescriptlang.org/)
+- Uses [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) for cross-browser compatibility
+- Bundled with [Webpack](https://webpack.js.org/)
+
 ## Support
 
-For issues and questions, please open an issue on GitHub.
+- 📖 [Documentation](https://github.com/Foraum-GmbH/ForaumDealsExtension/wiki)
+- 🐛 [Issue Tracker](https://github.com/Foraum-GmbH/ForaumDealsExtension/issues)
+- 💬 [Discussions](https://github.com/Foraum-GmbH/ForaumDealsExtension/discussions)
+- 📧 Email: support@foraum.com (replace with actual email)
+
+---
+
+<div align="center">
+  Made with ❤️ by <a href="https://foraum.com">Foraum GmbH</a>
+</div>

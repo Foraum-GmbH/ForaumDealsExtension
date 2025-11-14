@@ -15,7 +15,7 @@ function getDomain(url: string): string {
   try {
     const urlObj = new URL(url);
     return urlObj.hostname.replace('www.', '');
-  } catch (error) {
+  } catch {
     return '';
   }
 }
@@ -31,7 +31,7 @@ async function updateAffiliateCookies(deal: Deal): Promise<void> {
   try {
     const url = new URL(deal.affiliateUrl);
     const params = new URLSearchParams(url.search);
-    
+
     // Set affiliate cookie
     await browser.cookies.set({
       url: window.location.origin,
@@ -51,13 +51,13 @@ async function updateAffiliateCookies(deal: Deal): Promise<void> {
  */
 async function getDealsForCurrentDomain(): Promise<Deal[]> {
   currentDomain = getDomain(window.location.href);
-  
+
   if (!currentDomain) {
     return [];
   }
 
   const response = await browser.runtime.sendMessage({ type: 'GET_DEALS' });
-  
+
   if (!response || !response.deals) {
     return [];
   }
@@ -82,10 +82,10 @@ async function getDealsForCurrentDomain(): Promise<Deal[]> {
  */
 async function initialize(): Promise<void> {
   const deals = await getDealsForCurrentDomain();
-  
+
   if (deals.length > 0) {
     console.log(`Found ${deals.length} deals for ${currentDomain}`);
-    
+
     // Update badge to show number of deals
     browser.runtime.sendMessage({
       type: 'UPDATE_BADGE',
@@ -95,7 +95,7 @@ async function initialize(): Promise<void> {
 }
 
 // Listen for messages from background script
-browser.runtime.onMessage.addListener((message) => {
+browser.runtime.onMessage.addListener(message => {
   if (message.type === 'DEALS_UPDATED') {
     initialize();
   }

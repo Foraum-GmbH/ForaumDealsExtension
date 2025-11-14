@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/Foraum-GmbH/ForaumDealsExtension/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 🔒 Security Issue
+    url: https://github.com/Foraum-GmbH/ForaumDealsExtension/security/policy
+    about: Report security vulnerabilities privately (DO NOT create public issues)

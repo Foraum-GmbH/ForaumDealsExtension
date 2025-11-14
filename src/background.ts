@@ -6,7 +6,9 @@ import { Deal, DealsData } from './types';
  * Handles API calls and data storage
  */
 
-const API_URL = 'https://api.example.com/deals'; // Replace with actual API endpoint
+// API configuration - Replace with actual API endpoint
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const API_URL = 'https://api.example.com/deals';
 const STORAGE_KEY = 'foraum_deals_data';
 const UPDATE_INTERVAL = 3600000; // 1 hour in milliseconds
 
@@ -93,7 +95,7 @@ async function updateDeals(): Promise<void> {
   const deals = await fetchDeals();
   await storeDeals(deals);
   console.log(`Stored ${deals.length} deals`);
-  
+
   // Notify content scripts that deals have been updated
   const tabs = await browser.tabs.query({});
   tabs.forEach(tab => {
@@ -110,10 +112,10 @@ async function updateDeals(): Promise<void> {
  */
 async function initialize(): Promise<void> {
   console.log('Foraum Deals Extension initialized');
-  
+
   // Fetch deals immediately on startup
   await updateDeals();
-  
+
   // Set up periodic updates
   setInterval(updateDeals, UPDATE_INTERVAL);
 }
@@ -134,7 +136,7 @@ browser.runtime.onStartup.addListener(() => {
 initialize();
 
 // Handle messages from content scripts and popup
-browser.runtime.onMessage.addListener((message, sender) => {
+browser.runtime.onMessage.addListener((message, _sender) => {
   if (message.type === 'GET_DEALS') {
     return getStoredDeals();
   }

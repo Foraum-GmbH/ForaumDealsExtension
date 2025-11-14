@@ -27,5 +27,5 @@ export interface FilteredDeals {
 
 export interface Message {
   type: 'GET_DEALS' | 'UPDATE_COOKIES' | 'DEALS_UPDATED';
-  data?: any;
+  data?: unknown;
 }

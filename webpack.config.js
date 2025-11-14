@@ -28,7 +28,7 @@ module.exports = {
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: 'public', to: '.' }
+        { from: 'public', to: '.', globOptions: { ignore: ['**/style.css'] } }
       ]
     })
   ]

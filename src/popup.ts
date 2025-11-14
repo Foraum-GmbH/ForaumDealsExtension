@@ -45,13 +45,13 @@ function organizeDeals(deals: Deal[]): FilteredDeals {
       promoted: [],
       coupon: [],
       general: []
-    }
+    };
   } else {
     return {
       promoted: deals.filter(deal => deal.type === 'promoted'),
       coupon: deals.filter(deal => deal.type === 'coupon'),
       general: deals.filter(deal => deal.type === 'general')
-    }
+    };
   }
 }
 
@@ -219,8 +219,10 @@ function updateHeaderInfo(domain: string | null, dealCount: number): void {
   const domainInfoElement = document.getElementById('current-page');
 
   if (domainInfoElement && dealCountElement) {
-    dealCountElement.textContent = domain ? `${dealCount} Foraum Deal${dealCount === 1 ? '' : 's'}` : "Foraum Deals";
-    domainInfoElement.textContent = domain ? `Für: ${domain}` : "Unbekannte Seite";
+    dealCountElement.textContent = domain
+      ? `${dealCount} Foraum Deal${dealCount === 1 ? '' : 's'}`
+      : 'Foraum Deals';
+    domainInfoElement.textContent = domain ? `Für: ${domain}` : 'Unbekannte Seite';
   }
 }
 
@@ -231,9 +233,9 @@ async function loadDeals(): Promise<void> {
   try {
     currentDomain = await getCurrentDomain();
     const response = await browser.runtime.sendMessage({ type: 'GET_DEALS' });
-    
+
     allDeals = response.deals;
-  } catch (_error) {
+  } catch {
     allDeals = [];
   }
 

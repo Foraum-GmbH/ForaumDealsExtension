@@ -6,7 +6,6 @@ import type { Deal, DealsData } from './types';
  * Handles API calls and data storage
  */
 
-const _API_URL = 'https://api.example.com/deals';
 const STORAGE_KEY = 'foraum_deals_data';
 const UPDATE_INTERVAL = 3600000; // 1 hour in milliseconds
 

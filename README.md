@@ -10,7 +10,7 @@
 
 **A cross-browser extension that displays affiliate deals and coupons for the websites you visit.**
 
-[Features](#features) • [Installation](#installing-the-extension) • [Development](#development) • [API Integration](#api-integration) • [Contributing](#contributing)
+[Features](#features) • [Quick Start](QUICKSTART.md) • [Installation](#installing-the-extension) • [Development](#development) • [API Integration](#api-integration) • [Contributing](#contributing)
 
 </div>
 

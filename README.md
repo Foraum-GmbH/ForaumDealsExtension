@@ -2,15 +2,15 @@
 
 <div align="center">
 
-![License](https://img.shields.io/badge/license-See%20LICENSE-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
-![Chrome](https://img.shields.io/badge/Chrome-88%2B-brightgreen.svg)
-![Firefox](https://img.shields.io/badge/Firefox-109%2B-orange.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)
+  ![License](https://img.shields.io/badge/license-See%20LICENSE-blue.svg)
+  ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+  ![Chrome](https://img.shields.io/badge/Chrome-88%2B-brightgreen.svg)
+  ![Firefox](https://img.shields.io/badge/Firefox-109%2B-orange.svg)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)
 
-**A cross-browser extension that displays affiliate deals and coupons for the websites you visit.**
+  **A cross-browser extension that displays affiliate deals and coupons for the websites you visit.**
 
-[Features](#features) • [Quick Start](QUICKSTART.md) • [Installation](#installing-the-extension) • [Development](#development) • [API Integration](#api-integration) • [Contributing](#contributing)
+  [Features](#features) • [Quick Start](QUICKSTART.md) • [Installation](#installing-the-extension) • [Development](#development) • [API Integration](#api-integration) • [Contributing](#contributing)
 
 </div>
 

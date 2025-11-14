@@ -15,7 +15,7 @@ We take the security of the Foraum Deals Extension seriously. If you discover a 
 ### How to Report
 
 1. **DO NOT** open a public issue for security vulnerabilities
-2. Email security concerns to: [security@foraum.com](mailto:security@foraum.com) (replace with actual email)
+2. Email security concerns to: [security@foraum.de](mailto:security@foraum.de) (replace with actual email)
 3. Include the following information:
    - Description of the vulnerability
    - Steps to reproduce
@@ -76,15 +76,15 @@ The extension requires the following permissions:
 
 - **storage**: To cache deals locally
 - **cookies**: To set affiliate tracking cookies
-- **tabs**: To get current tab URL for domain filtering
+- **tabs**: To get current tab URL for domain to deal lookup
 - **host_permissions**: To work on all websites
 
 ### Data Privacy
 
-- **No Personal Data Collection**: The extension does not collect personal information
+- **No Personal Data Collection**: The extension does not collect any information
 - **Local Storage**: Deal data is stored locally in the browser
 - **API Calls**: Only made to fetch public deal information
-- **Cookies**: Only affiliate tracking cookies are set, with user interaction
+- **Cookies**: Only affiliate cookies are set, with user interaction
 
 ### Content Security
 
@@ -115,35 +115,6 @@ The extension requires the following permissions:
    ```
 
 4. Review the built files in `dist/` before loading
-
-### Code Signing
-
-Official releases are:
-- Built using GitHub Actions
-- Artifacts are available for verification
-- Signed when published to browser stores
-
-## Vulnerability Disclosure Policy
-
-We follow responsible disclosure practices:
-
-1. **Private Disclosure**: Report vulnerabilities privately first
-2. **Coordinated Release**: We'll work with you on disclosure timing
-3. **Public Disclosure**: After fix is released and users have time to update
-4. **CVE Assignment**: For critical vulnerabilities, we'll request CVE assignment
-
-## Security Updates
-
-Security updates are released as soon as possible:
-
-- **Critical**: Within 24-48 hours
-- **High**: Within 1 week
-- **Medium/Low**: In next regular release
-
-Updates are announced through:
-- GitHub Security Advisories
-- Release notes
-- Extension update mechanism
 
 ## Contact
 

@@ -1,7 +1,7 @@
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
+import prettier from 'eslint-plugin-prettier';
+import tseslint from 'typescript-eslint';
 
 export default [
   {
@@ -15,7 +15,7 @@ export default [
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        ecmaVersion: 2020,
+        ecmaVersion: 2022,
         sourceType: 'module',
         project: './tsconfig.json'
       },

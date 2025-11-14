@@ -1,14 +1,12 @@
 import browser from 'webextension-polyfill';
-import { Deal, DealsData } from './types';
+import type { Deal, DealsData } from './types';
 
 /**
  * Background service worker
  * Handles API calls and data storage
  */
 
-// API configuration - Replace with actual API endpoint
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const API_URL = 'https://api.example.com/deals';
+const _API_URL = 'https://api.example.com/deals';
 const STORAGE_KEY = 'foraum_deals_data';
 const UPDATE_INTERVAL = 3600000; // 1 hour in milliseconds
 
@@ -17,8 +15,6 @@ const UPDATE_INTERVAL = 3600000; // 1 hour in milliseconds
  */
 async function fetchDeals(): Promise<Deal[]> {
   try {
-    // For demonstration, returning mock data
-    // In production, replace with actual API call:
     // const response = await fetch(API_URL);
     // const data = await response.json();
     // return data.deals;
@@ -28,9 +24,9 @@ async function fetchDeals(): Promise<Deal[]> {
         id: '1',
         title: '20% Off Your First Order',
         description: 'Save 20% on your first purchase',
-        type: 'promoted',
+        type: 'general',
         domain: 'example.com',
-        link: 'https://example.com/deals',
+        link: 'https://foraum.de/deals',
         couponCode: 'FIRST20',
         affiliateUrl: 'https://example.com?ref=foraum'
       },
@@ -39,7 +35,7 @@ async function fetchDeals(): Promise<Deal[]> {
         title: 'Free Shipping',
         description: 'Get free shipping on orders over $50',
         type: 'coupon',
-        domain: 'example.com',
+        domain: 'www.foraum.de',
         couponCode: 'FREESHIP50'
       },
       {
@@ -47,7 +43,7 @@ async function fetchDeals(): Promise<Deal[]> {
         title: 'Summer Sale - Up to 50% Off',
         description: 'Huge savings on summer items',
         type: 'general',
-        domain: 'example.com',
+        domain: 'foraum.de',
         link: 'https://example.com/summer-sale',
         affiliateUrl: 'https://example.com/summer-sale?ref=foraum'
       },
@@ -55,9 +51,61 @@ async function fetchDeals(): Promise<Deal[]> {
         id: '4',
         title: '10% Off Electronics',
         description: 'Save on the latest tech',
-        type: 'general',
-        domain: 'shop.example.com',
+        type: 'coupon',
+        domain: 'shop.foraum.de',
         couponCode: 'TECH10'
+      },
+      {
+        id: '5',
+        title: 'Buy One Get One Free',
+        description: 'BOGO offer on select items',
+        type: 'general',
+        domain: 'deals.foraum.de',
+        link: 'https://deals.foraum.de/bogo',
+        affiliateUrl: 'https://deals.foraum.de/bogo?ref=foraum'
+      },
+      {
+        id: '6',
+        title: 'Exclusive Member Discount',
+        description: 'Special discount for members only',
+        type: 'coupon',
+        domain: 'members.foraum.de',
+        couponCode: 'MEMBER20'
+      },
+      {
+        id: '7',
+        title: 'Holiday Special',
+        description: 'Exclusive holiday discounts',
+        type: 'general',
+        domain: 'holiday.foraum.de',
+        link: 'https://holiday.foraum.de/special',
+        affiliateUrl: 'https://holiday.foraum.de/special?ref=foraum'
+      },
+      {
+        id: '8',
+        title: 'Clearance Sale - Up to 70% Off',
+        description: 'Massive discounts on clearance items',
+        type: 'general',
+        domain: 'clearance.foraum.de',
+        link: 'https://clearance.foraum.de/sale',
+        affiliateUrl: 'https://clearance.foraum.de/sale?ref=foraum'
+      },
+      {
+        id: '9',
+        title: '15% Off Sitewide',
+        description: 'Enjoy 15% off everything on the site',
+        type: 'coupon',
+        domain: 'www.foraum.de',
+        couponCode: 'SITEWIDE15'
+      },
+      {
+        id: '10',
+        title: 'Weekend Flash Sale',
+        description: 'Limited time offers this weekend only',
+        type: 'general',
+        domain: 'flash.foraum.de',
+        link: 'https://flash.foraum.de/weekend-sale',
+        affiliateUrl: 'https://flash.foraum.de/weekend-sale?ref=foraum'
       }
     ];
 
@@ -88,6 +136,16 @@ export async function getStoredDeals(): Promise<DealsData | null> {
 }
 
 /**
+ * Update Extension badge
+ */
+async function updateBadge(count: number): Promise<void> {
+  const text = count > 0 ? count.toString() : null;
+  await browser.action.setBadgeText({ text });
+  browser.action.setBadgeTextColor({ color: '#FFFFFF' });
+  await browser.action.setBadgeBackgroundColor({ color: '#FF0000' });
+}
+
+/**
  * Update deals from API
  */
 async function updateDeals(): Promise<void> {
@@ -98,13 +156,13 @@ async function updateDeals(): Promise<void> {
 
   // Notify content scripts that deals have been updated
   const tabs = await browser.tabs.query({});
-  tabs.forEach(tab => {
+  for (const tab of tabs) {
     if (tab.id) {
       browser.tabs.sendMessage(tab.id, { type: 'DEALS_UPDATED' }).catch(() => {
         // Ignore errors for tabs that don't have content script
       });
     }
-  });
+  }
 }
 
 /**
@@ -112,33 +170,30 @@ async function updateDeals(): Promise<void> {
  */
 async function initialize(): Promise<void> {
   console.log('Foraum Deals Extension initialized');
-
-  // Fetch deals immediately on startup
   await updateDeals();
-
-  // Set up periodic updates
   setInterval(updateDeals, UPDATE_INTERVAL);
 }
 
-// Listen for installation
 browser.runtime.onInstalled.addListener(() => {
   console.log('Extension installed');
   initialize();
 });
 
-// Listen for browser startup
 browser.runtime.onStartup.addListener(() => {
   console.log('Browser started');
   initialize();
 });
 
-// Initialize immediately
-initialize();
+await initialize();
 
-// Handle messages from content scripts and popup
-browser.runtime.onMessage.addListener((message, _sender) => {
+browser.runtime.onMessage.addListener((message, _) => {
   if (message.type === 'GET_DEALS') {
     return getStoredDeals();
   }
+
+  if (message.type === 'UPDATE_BADGE') {
+    return updateBadge(message.data.count);
+  }
+
   return Promise.resolve();
 });

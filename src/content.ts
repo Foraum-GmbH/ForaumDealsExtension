@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import { Deal } from './types';
+import type { Deal } from './types';
 
 /**
  * Content script
@@ -34,7 +34,7 @@ async function updateAffiliateCookies(deal: Deal): Promise<void> {
 
     // Set affiliate cookie
     await browser.cookies.set({
-      url: window.location.origin,
+      url: globalThis.location.origin,
       name: 'foraum_affiliate',
       value: params.get('ref') || 'foraum',
       expirationDate: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60 // 30 days
@@ -50,7 +50,7 @@ async function updateAffiliateCookies(deal: Deal): Promise<void> {
  * Get filtered deals for current domain
  */
 async function getDealsForCurrentDomain(): Promise<Deal[]> {
-  currentDomain = getDomain(window.location.href);
+  currentDomain = getDomain(globalThis.location.href);
 
   if (!currentDomain) {
     return [];
@@ -58,7 +58,7 @@ async function getDealsForCurrentDomain(): Promise<Deal[]> {
 
   const response = await browser.runtime.sendMessage({ type: 'GET_DEALS' });
 
-  if (!response || !response.deals) {
+  if (!response?.deals) {
     return [];
   }
 
@@ -94,16 +94,14 @@ async function initialize(): Promise<void> {
   }
 }
 
-// Listen for messages from background script
 browser.runtime.onMessage.addListener(message => {
   if (message.type === 'DEALS_UPDATED') {
     initialize();
   }
 });
 
-// Initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initialize);
 } else {
-  initialize();
+  await initialize();
 }
